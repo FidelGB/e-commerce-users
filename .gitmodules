@@ -1,0 +1,3 @@
+[submodule "modules/protobufs/protos"]
+	path = modules/protobufs/protos
+	url = git@github.com:FidelGB/e-commerce-protobufs.git
