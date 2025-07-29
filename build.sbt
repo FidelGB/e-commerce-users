@@ -25,8 +25,8 @@ lazy val protos = project
     version := "0.1.0-SNAPSHOT",
 
     scalaVersion := scala2Version,
-    PB.targets in Compile := Seq(
-      scalapb.gen(grpc = true) -> (sourceManaged in Compile).value
+    Compile / PB.targets := Seq(
+      scalapb.gen(grpc = true) -> (Compile / sourceManaged).value
     ),
     Compile / PB.protoSources += baseDirectory.value / "src",
     Compile / PB.targets := Seq(
