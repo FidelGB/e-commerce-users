@@ -45,3 +45,5 @@ lazy val protos = project
       "com.thesamet.scalapb" %% "compilerplugin" % "0.11.13"
     )
   ).enablePlugins(ProtocPlugin)
+
+enablePlugins(ScalafmtPlugin)
