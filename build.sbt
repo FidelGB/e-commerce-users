@@ -17,7 +17,7 @@ lazy val core = project
     ),
     Compile / run / fork := true,
     libraryDependencies ++= Seq(
-      "io.grpc" % "grpc-netty" % "1.64.0",
+      "io.grpc" % "grpc-netty-shaded" % scalapb.compiler.Version.grpcJavaVersion,
       "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % "0.11.13",
       "org.typelevel" %% "cats-effect" % "3.5.4",
       "org.scalameta" %% "munit" % "1.0.0" % Test
