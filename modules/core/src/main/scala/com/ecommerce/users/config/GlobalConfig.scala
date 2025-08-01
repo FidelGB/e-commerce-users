@@ -19,7 +19,7 @@ case class PostgresConfig(
   host: String,
   port: Int,
   user: String,
-  password: String,
+  password: Secret[String],
   database: String,
 )
 
@@ -40,7 +40,7 @@ object GlobalConfig {
       env("DB_HOST").as[String],
       env("DB_PORT").as[Int].default(5432),
       env("DB_USER").as[String],
-      env("DB_PASSWORD").as[String],
+      env("DB_PASSWORD").as[String].secret,
       env("DB_DATABASE").as[String].default("ecommerce_users"),
     ).mapN(PostgresConfig.apply)
 }
