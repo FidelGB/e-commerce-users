@@ -17,6 +17,8 @@ lazy val core = project
     ),
     Compile / run / fork := true,
     libraryDependencies ++= Seq(
+      "io.grpc" % "grpc-netty" % "1.64.0",
+      "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % "0.11.13",
       "org.typelevel" %% "cats-effect" % "3.5.4",
       "org.scalameta" %% "munit" % "1.0.0" % Test
     ) 
@@ -24,26 +26,19 @@ lazy val core = project
 
 lazy val protos = project
   .in(file("modules/protobufs"))
-  .enablePlugins(Fs2Grpc)
+  .enablePlugins(Fs2Grpc, ProtocPlugin)
   .settings(
     name := "protobufs",
     version := "0.1.0-SNAPSHOT",
 
     scalaVersion := scala2Version,
-    Compile / PB.targets := Seq(
-      scalapb.gen(grpc = true) -> (Compile / sourceManaged).value
-    ),
+
     Compile / PB.protoSources += baseDirectory.value / "src",
-    Compile / PB.targets := Seq(
-      scalapb.gen() -> (Compile / sourceManaged).value
-    ),
 
     libraryDependencies ++= Seq(
       "com.thesamet.scalapb" %% "scalapb-runtime" % "0.11.13" % "protobuf",
-      "io.grpc" % "grpc-netty" % "1.53.0",
-      "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % "0.11.13",
       "com.thesamet.scalapb" %% "compilerplugin" % "0.11.13"
     )
-  ).enablePlugins(ProtocPlugin)
+  )
 
 enablePlugins(ScalafmtPlugin)
