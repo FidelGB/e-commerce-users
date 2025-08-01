@@ -20,7 +20,10 @@ lazy val core = project
       "io.grpc" % "grpc-netty-shaded" % scalapb.compiler.Version.grpcJavaVersion,
       "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % "0.11.13",
       "org.typelevel" %% "cats-effect" % "3.5.4",
-      "org.scalameta" %% "munit" % "1.0.0" % Test
+      "org.scalameta" %% "munit" % "1.0.0" % Test,
+      "is.cir" %% "ciris" % "3.5.0",
+      "is.cir" %% "ciris-circe" % "3.5.0",
+      "is.cir" %% "ciris-circe-yaml" % "3.5.0"
     ) 
   ).dependsOn(protos)
 
