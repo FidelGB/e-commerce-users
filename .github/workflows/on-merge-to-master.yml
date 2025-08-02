@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - master
-      - feat-add-pr-checks
 
 env:
   DOCKER_REGISTRY: ${{ vars.DOCKER_REGISTRY }}
