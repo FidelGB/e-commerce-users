@@ -62,5 +62,14 @@ jobs:
           docker tag ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.versioning.outputs.tag }} ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           docker push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.versioning.outputs.tag }}
           docker push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+      
+      - name: Create Release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "v${{ steps.versioning.outputs.tag }}"
+          tag: ${{ steps.versioning.outputs.tag }}
+          body: "${{ steps.versioning.outputs.changelog }}"
+          gzip: false
 
 
