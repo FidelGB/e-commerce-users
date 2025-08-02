@@ -7,6 +7,7 @@ import cats.syntax.apply._
 import ciris._
 
 case class GlobalConfig(
+  appVersion: String,
   grpc: GrpcServerConfig,
   postgres: PostgresConfig,
 )
@@ -25,6 +26,7 @@ case class PostgresConfig(
 
 object GlobalConfig {
   def load[F[_] : Async]: Resource[F, GlobalConfig] = (
+    env("APP_VERSION").as[String].default("local"),
     loadGrpcConfig,
     loadPostgresConfig,
   ).mapN(GlobalConfig.apply).resource[F]
