@@ -14,8 +14,11 @@ object Main extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
     val serverResource: Resource[IO, Unit] = for {
       config      <- GlobalConfig.load[IO]
-      xa          <- PostgresConnection.resource[IO](config.postgres)
       logger       = Slf4jLogger.getLogger[IO]
+      _           <- Resource.eval(
+                       logger.info(s"=============== E-COMMERCE USERS v${config.appVersion} ==============="),
+                     )
+      xa          <- PostgresConnection.resource[IO](config.postgres)
       grpcService <- UsersImplementation.getBind[IO](config, xa, logger)
       server      <-
         NettyServerBuilder
