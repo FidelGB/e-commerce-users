@@ -1,0 +1,74 @@
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_REGISTRY: ${{ vars.DOCKER_REGISTRY }}
+  DOCKER_IMAGE_NAME: ${{ vars.DOCKER_IMAGE_NAME }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Docker
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+        
+      - name: Install sbt
+        uses: coursier/setup-action@v1
+        with:
+          apps: sbt
+
+      - name: Cache sbt
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+            ~/.coursier
+          key: sbt-cache-${{ runner.os }}-${{ hashFiles('**/build.sbt') }}
+          restore-keys: |
+            sbt-cache-${{ runner.os }}-
+
+      - name: Get Versioning Data
+        id: versioning
+        uses: Soumeh/Auto-Versioning@main
+      
+      - name: Publish local
+        run: sbt publishLocal
+        env: 
+          APP_VERSION: ${{ steps.versioning.outputs.tag }} 
+          DOCKER_REGISTRY: ${{ env.DOCKER_REGISTRY }} 
+          DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
+      
+      - name: Tag image as latest and submit
+        run: |
+          docker tag ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.versioning.outputs.tag }} ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.versioning.outputs.tag }}
+          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+      
+      - name: Create Release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "v${{ steps.versioning.outputs.tag }}"
+          tag: ${{ steps.versioning.outputs.tag }}
+          body: "${{ steps.versioning.outputs.changelog }}"
+          gzip: false
+
+
