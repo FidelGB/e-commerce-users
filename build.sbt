@@ -7,7 +7,7 @@ libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.11.11"
 lazy val appVersion = sys.env.getOrElse("APP_VERSION", "local")
 lazy val grpcPort   = sys.env.getOrElse("GRPC_SERVER_PORT", "9000").toInt
 lazy val dockerRegistry = sys.env.getOrElse("DOCKER_REGISTRY", "fgarcia14")
-lazy val dockerPackageName = sys.env.getOrElse("DOCKER_IMAGE_NAME", "ecommerce/users")
+lazy val dockerPackageName = sys.env.getOrElse("DOCKER_IMAGE_NAME", "ecommerce-users")
 
 lazy val core = project
   .in(file("modules/core"))
